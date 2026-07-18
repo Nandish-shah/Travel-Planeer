@@ -1,0 +1,6 @@
+{
+  "name": "wanderly",
+  "private": true,
+  "type": "module",
+  "description": "Vercel deployment root for the Wanderly AI travel planner (frontend static build + backend serverless function)."
+}
