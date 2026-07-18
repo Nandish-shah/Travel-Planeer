@@ -23,6 +23,13 @@ router.post("/plan", async (req, res) => {
       });
     }
 
+    if (err.status === 429 || /RESOURCE_EXHAUSTED|429/.test(err.message)) {
+      return res.status(429).json({
+        error:
+          "The AI provider is temporarily rate-limited (free-tier quota reached). Please wait a minute and try again.",
+      });
+    }
+
     return res.status(502).json({
       error: "Failed to generate travel plan from AI provider.",
       details: err.message,

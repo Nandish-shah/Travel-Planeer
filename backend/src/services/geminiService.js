@@ -261,33 +261,54 @@ REQUIREMENTS:
 Return ONLY the structured data matching the response schema.`;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRateLimitError(err) {
+  return err?.status === 429 || /RESOURCE_EXHAUSTED|429/.test(err?.message || "");
+}
+
 export async function generateTravelPlan(input) {
   const ai = getClient();
-  const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
+  const model = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
 
   const prompt = buildPrompt(input);
 
-  const result = await ai.models.generateContent({
-    model,
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema,
-      temperature: 0.9,
-    },
-  });
+  const maxAttempts = 2;
+  let lastErr;
 
-  const text = result.text;
-  if (!text) {
-    throw new Error("Gemini returned an empty response.");
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const result = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema,
+          temperature: 0.9,
+        },
+      });
+
+      const text = result.text;
+      if (!text) {
+        throw new Error("Gemini returned an empty response.");
+      }
+
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        throw new Error("Failed to parse Gemini response as JSON: " + err.message);
+      }
+    } catch (err) {
+      lastErr = err;
+      if (isRateLimitError(err) && attempt < maxAttempts) {
+        await sleep(4000);
+        continue;
+      }
+      throw err;
+    }
   }
 
-  let parsed;
-  try {
-    parsed = JSON.parse(text);
-  } catch (err) {
-    throw new Error("Failed to parse Gemini response as JSON: " + err.message);
-  }
-
-  return parsed;
+  throw lastErr;
 }
