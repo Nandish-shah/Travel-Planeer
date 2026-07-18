@@ -90,7 +90,7 @@ export default function MapTab({ plan }) {
     const embedSrc = `https://www.google.com/maps?q=${query}&output=embed`;
     return (
       <div className="overflow-hidden rounded-2xl border border-ocean-100 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-ocean-100 px-6 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ocean-100 px-6 py-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-ocean-900">
             <MapPin size={16} className="text-sunset-500" />
             {plan.mapQuery || plan.destination}

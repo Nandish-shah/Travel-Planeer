@@ -2,7 +2,7 @@ import { Star, MapPin } from "lucide-react";
 
 export default function HotelsTab({ plan }) {
   return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {plan.hotels.map((hotel, i) => (
         <div
           key={i}

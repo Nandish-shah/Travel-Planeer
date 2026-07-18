@@ -36,9 +36,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
     margin: 0;
+    overflow-x: hidden;
     font-family: var(--font-body);
     background-color: var(--color-sand-50);
     color: var(--color-ocean-950);

@@ -158,7 +158,7 @@ export default function PlannerForm({ onSubmit, loading }) {
                 </span>
               )}
             </span>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-medium text-ocean-500">From</span>
                 <input
